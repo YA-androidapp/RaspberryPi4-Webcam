@@ -278,6 +278,62 @@ $ sudo apt-get install ffmpeg libnginx-mod-rtmp nginx
 >
 > libnginx-mod-mail libnginx-mod-stream nginx-common nginx-full
 
+### 6.2. 設定ファイル
+
+#### 6.2.1. Nginx
+
+```sh
+$ sudo nano /etc/nginx/modules-available/rtmplive.conf
+```
+
+[rtmplive.conf](rtmp/rtmplive.conf)
+
+```sh
+$ sudo ln -s /etc/nginx/modules-available/rtmplive.conf /etc/nginx/modules-enabled/99-rtmplive.conf
+```
+
+#### 6.2.2. fstab
+
+```sh
+$ sudo nano /etc/fstab
+```
+
+[fstab](rtmp/fstab)
+
+```sh
+$ sudo mount -a
+```
+
+#### 6.2.3. docroot
+
+```sh
+$ sudo ln -s /tmp/live /var/www/html/live
+```
+
+```sh
+$ sudo nano /var/www/html/index.html
+```
+
+[index.html](rtmp/index.html)
+
+#### 6.2.4. 設定反映・実行
+
+```sh
+$ sudo systemctl restart nginx.service
+$ nano ~/rtmplive.sh
+```
+
+[index.html](rtmp/rtmplive.sh)
+
+```sh
+$ chmod +x ~/rtmplive.sh
+$ ~/rtmplive.sh
+```
+
+### 6.3. 動作確認
+
+http://raspberrypi.local
+
 ---
 
 Copyright (c) 2021 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
