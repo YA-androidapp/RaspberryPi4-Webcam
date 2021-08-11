@@ -7,13 +7,13 @@ Raspberry Pi 4 で UVC 対応 Web カメラを使う
 ## 1. OS バージョンなどの前提
 
 ```sh
-\$ cat /etc/debian_version
+$ cat /etc/debian_version
 ```
 
 > 10.2
 
 ```sh
-\$ cat /etc/debian_version
+$ cat /etc/debian_version
 ```
 
 > PRETTY_NAME="Raspbian GNU/Linux 10 (buster)"
@@ -41,7 +41,7 @@ Raspberry Pi 4 で UVC 対応 Web カメラを使う
 ## 3. 認識されているか確認する
 
 ```sh
-\$ lsusb
+$ lsusb
 ```
 
 > Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
@@ -59,17 +59,83 @@ Raspberry Pi 4 で UVC 対応 Web カメラを使う
 > Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 
 ```sh
-\$ ls /dev/video\*
+$ ls /dev/video\*
 ```
 
 > /dev/video0 /dev/video1 /dev/video10 /dev/video11 /dev/video12
+
+```sh
+# デバイス一覧を表示する
+$ v4l2-ctl --list-device
+bcm2835-codec-decode (platform:bcm2835-codec):
+        /dev/video10
+        /dev/video11
+        /dev/video12
+
+bcm2835-isp (platform:bcm2835-isp):
+        /dev/video13
+        /dev/video14
+        /dev/video15
+        /dev/video16
+
+BU~~~LO ~~~~~~~~~ Webcam: BU~~~ (usb-0000:01:00.0-1.1):
+        /dev/video0
+        /dev/video1
+
+
+
+# 対応フォーマットを確認する
+$ v4l2-ctl --device /dev/video0 --list-formats-ext
+ioctl: VIDIOC_ENUM_FMT
+        Type: Video Capture
+
+        [0]: 'YUYV' (YUYV 4:2:2)
+                Size: Discrete 640x480
+                        Interval: Discrete 0.033s (30.000 fps)
+                        Interval: Discrete 0.040s (25.000 fps)
+                        Interval: Discrete 0.050s (20.000 fps)
+                        Interval: Discrete 0.067s (15.000 fps)
+                        Interval: Discrete 0.100s (10.000 fps)
+                        Interval: Discrete 0.200s (5.000 fps)
+                Size: Discrete 352x288
+                        Interval: Discrete 0.033s (30.000 fps)
+                        Interval: Discrete 0.040s (25.000 fps)
+                        Interval: Discrete 0.050s (20.000 fps)
+                        Interval: Discrete 0.067s (15.000 fps)
+                        Interval: Discrete 0.100s (10.000 fps)
+                        Interval: Discrete 0.200s (5.000 fps)
+                Size: Discrete 320x240
+                        Interval: Discrete 0.033s (30.000 fps)
+                        Interval: Discrete 0.040s (25.000 fps)
+                        Interval: Discrete 0.050s (20.000 fps)
+                        Interval: Discrete 0.067s (15.000 fps)
+                        Interval: Discrete 0.100s (10.000 fps)
+                        Interval: Discrete 0.200s (5.000 fps)
+                Size: Discrete 176x144
+                        Interval: Discrete 0.033s (30.000 fps)
+                        Interval: Discrete 0.040s (25.000 fps)
+                        Interval: Discrete 0.050s (20.000 fps)
+                        Interval: Discrete 0.067s (15.000 fps)
+                        Interval: Discrete 0.100s (10.000 fps)
+                        Interval: Discrete 0.200s (5.000 fps)
+                Size: Discrete 160x120
+                        Interval: Discrete 0.033s (30.000 fps)
+                        Interval: Discrete 0.040s (25.000 fps)
+                        Interval: Discrete 0.050s (20.000 fps)
+                        Interval: Discrete 0.067s (15.000 fps)
+                        Interval: Discrete 0.100s (10.000 fps)
+                        Interval: Discrete 0.200s (5.000 fps)
+                Size: Discrete 1280x1024
+                        Interval: Discrete 0.111s (9.000 fps)
+                        Interval: Discrete 0.200s (5.000 fps)
+```
 
 ## 4. ビューワーで映像を確認する
 
 [GTK+ UVC Viewer\(guvcview\)](http://guvcview.sourceforge.net/)をインストールして、Web カメラの映像を確認する。
 
 ```sh
-\$ sudo apt install guvcview
+$ sudo apt install guvcview
 ```
 
 > 以下の追加パッケージがインストールされます:
@@ -77,7 +143,7 @@ Raspberry Pi 4 で UVC 対応 Web カメラを使う
 > libgsl23 libgslcblas0 libguvcview-2.0-2 libwebcam0 uvcdynctrl uvcdynctrl-data
 
 ```sh
-\$ guvcview &
+$ guvcview &
 ```
 
 ![guvcview.png](guvcview.png)
@@ -91,7 +157,7 @@ VLC でも確認できるが、非常に動作が重い。
 ### 5.1. ライブラリをインストールする
 
 ```sh
-\$ sudo apt install python3-opencv
+$ sudo apt install python3-opencv
 ```
 
 > 以下の追加パッケージがインストールされます:
@@ -122,7 +188,7 @@ $
 ### 5.3. Python3 で画像を取得・保存する
 
 ```sh
-\$ python3
+$ python3
 ```
 
 ```
@@ -191,3 +257,27 @@ Type "help", "copyright", "credits" or "license" for more information.
 ```
 
 ![py.png](py.png)
+
+## 6. ストリーミング配信
+
+### 6.1. パッケージをインストールする
+
+```sh
+$ sudo apt-get update -y
+$ sudo apt-get install ffmpeg libnginx-mod-rtmp nginx
+
+```
+
+> ffmpeg はすでに最新バージョン (7:4.1.6-1~deb10u1+rpt2) です。
+>
+> 以下の追加パッケージがインストールされます:
+>
+> libnginx-mod-http-auth-pam libnginx-mod-http-dav-ext libnginx-mod-http-echo libnginx-mod-http-geoip
+>
+> libnginx-mod-http-image-filter libnginx-mod-http-subs-filter libnginx-mod-http-upstream-fair libnginx-mod-http-xslt-filter
+>
+> libnginx-mod-mail libnginx-mod-stream nginx-common nginx-full
+
+---
+
+Copyright (c) 2021 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
