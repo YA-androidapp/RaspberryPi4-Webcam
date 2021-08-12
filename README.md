@@ -323,7 +323,7 @@ $ sudo systemctl restart nginx.service
 $ nano ~/rtmplive.sh
 ```
 
-[index.html](rtmp/rtmplive.sh)
+[rtmplive.sh](rtmp/rtmplive.sh)
 
 ```sh
 $ chmod +x ~/rtmplive.sh

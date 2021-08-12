@@ -1,1 +1,2 @@
+# 追記
 tmpfs    /tmp    tmpfs   defaults,noatime,mode=1777    0    0
